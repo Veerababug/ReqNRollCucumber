@@ -1,0 +1,6 @@
+{
+  "generator": "NUnit",
+  "runtime": {
+    "stopAtFirstError": false
+  }
+}
