@@ -84,14 +84,14 @@ namespace ReqnrollProject2.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Launch Website and Quit the Driver - TC_TMX2005")]
-        [NUnit.Framework.CategoryAttribute("Google")]
-        public async System.Threading.Tasks.Task LaunchWebsiteAndQuitTheDriver_TC_TMX2005()
+        [NUnit.Framework.DescriptionAttribute("Launch Website and Quit the Driver")]
+        [NUnit.Framework.CategoryAttribute("Sanity")]
+        public async System.Threading.Tasks.Task LaunchWebsiteAndQuitTheDriver()
         {
             string[] tagsOfScenario = new string[] {
-                    "Google"};
+                    "Sanity"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Launch Website and Quit the Driver - TC_TMX2005", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Launch Website and Quit the Driver", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -117,11 +117,11 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Enter Valid Credentials")]
-        [NUnit.Framework.CategoryAttribute("Google")]
+        [NUnit.Framework.CategoryAttribute("Exploratory")]
         public async System.Threading.Tasks.Task EnterValidCredentials()
         {
             string[] tagsOfScenario = new string[] {
-                    "Google"};
+                    "Exploratory"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Enter Valid Credentials", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 12

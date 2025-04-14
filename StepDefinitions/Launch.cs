@@ -7,7 +7,6 @@ using AventStack.ExtentReports.Gherkin.Model;
 using OpenQA.Selenium;
 using ReqnrollProject2.Drivers;
 using ReqnrollProject2.Pages;
-using ReqnrollProject2.Utility;
 
 namespace ReqnrollProject2.StepDefinitions
 {

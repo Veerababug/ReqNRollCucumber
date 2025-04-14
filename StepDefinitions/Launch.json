@@ -3,7 +3,7 @@
     {
       "TestCaseId": "TC_TMX2005",
       "Data": {
-        "Run": "Yes",
+        "Run": "No",
         "Username": "user1",
         "Password": "password1",
         "Browser": "#Browser"
@@ -12,7 +12,7 @@
     {
       "TestCaseId": "TC_TMX2006",
       "Data": {
-        "Run": "No",
+        "Run": "Yes",
         "CompanyName": "user1",
         "Password": "password1",
         "Browser": "#Browser"
