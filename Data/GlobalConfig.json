@@ -1,0 +1,21 @@
+{
+  "Application": {
+    "Server": "https://www.freemanco.com/store",
+    "LogoutURL": "https://www.freemanco.com/store/index.jsp/"
+  },
+  "Browser": {
+    "BrowserName": "chrome",
+    "Version": "91",
+    "Incognito": false,
+    "Headless": false
+  },
+  "Timeouts": {
+    "ExplicitWait": 30,
+    "ImplicitWait": 10
+  },
+  "Credentials": {
+    "Username": "User",
+    "Password": "Password"
+  },
+  "Address": "Kakinada"
+}

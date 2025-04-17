@@ -3,7 +3,7 @@
     {
       "TestCaseId": "TC_TMX2005",
       "Data": {
-        "Run": "No",
+        "Run": "Yes",
         "Username": "user1",
         "Password": "password1",
         "Browser": "#Browser"

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AventStack.ExtentReports.Gherkin.Model;
-using OpenQA.Selenium;
+﻿using AventStack.ExtentReports.Gherkin.Model;
 using ReqnrollProject2.Drivers;
 using ReqnrollProject2.Pages;
+using ReqnrollProject2.Utility;
 
 namespace ReqnrollProject2.StepDefinitions
 {
@@ -22,6 +17,7 @@ namespace ReqnrollProject2.StepDefinitions
         [Given("Open Google WebSite")]
         public void GivenOpenGoogleWebSite()
         {
+           
             lp.NavigateToLoginPage();
         }
 

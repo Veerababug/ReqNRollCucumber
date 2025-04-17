@@ -23,6 +23,9 @@ public sealed class Hooks : ExtentReport
     [BeforeTestRun]
     public static void BeforeTestRun()
     {
+        Config.Load(Path.Combine(AppContext.BaseDirectory.Replace("bin\\Debug\\net8.0", "Data"), "GlobalConfig.json"));
+        var browser = Config.Settings.Browser.BrowserName;
+        var timeout = Config.Settings.Timeouts.ExplicitWait;
         InitializeReport();
     }
 
@@ -97,7 +100,17 @@ public sealed class Hooks : ExtentReport
         }
 
         // Launch the driver if everything is valid
-        Driver.GetDriver();
+
+        string browserFromTag = tags.FirstOrDefault(t => t.StartsWith("browser:", StringComparison.OrdinalIgnoreCase));
+        string browserName = browserFromTag?.Split(':').Last().Trim() ?? Config.Settings.Browser.BrowserName;
+
+        // Set the browser in a ThreadLocal variable (set once per scenario)
+        TestContext.CurrentContext.Test.Properties.Get(browserName);
+
+        // ... Existing logic for test data loading
+
+        // Launch browser based on tag
+        Driver.GetDriver(browserName);
     }
 
     [AfterStep]

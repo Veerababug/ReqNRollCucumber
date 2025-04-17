@@ -22,13 +22,15 @@ namespace ReqnrollProject2.Features
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Launch the google application")]
     [NUnit.Framework.CategoryAttribute("parallelizable")]
+    [NUnit.Framework.CategoryAttribute("browser:Chrome")]
     public partial class LaunchTheGoogleApplicationFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "parallelizable"};
+                "parallelizable",
+                "browser:Chrome"};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Launch the google application", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
         

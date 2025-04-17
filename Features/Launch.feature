@@ -1,4 +1,4 @@
-﻿@parallelizable
+﻿@parallelizable @browser:Chrome
 Feature: Launch the google application
 
 

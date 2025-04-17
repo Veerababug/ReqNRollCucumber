@@ -1,10 +1,12 @@
-﻿using System;
+﻿using CsvHelper;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Formats.Asn1;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace ReqnrollProject2.Drivers
 {
@@ -29,38 +31,98 @@ namespace ReqnrollProject2.Drivers
         {
             lock (_lock)
             {
+                // If data is already cached, skip loading
                 if (_cache.ContainsKey(featurePath))
                     return;
 
-                if (!File.Exists(commonPath))
-                    throw new FileNotFoundException($"Common data file not found: {commonPath}");
+                // Load common data first
+                LoadCommonData(commonPath);
 
-                var commonJson = File.ReadAllText(commonPath);
-                _commonData = JsonConvert.DeserializeObject<Dictionary<string, string>>(commonJson);
+                // Determine the file extension and load the data accordingly
+                string fileExtension = Path.GetExtension(featurePath).ToLower();
 
-                if (!File.Exists(featurePath))
-                    throw new FileNotFoundException($"Feature data file not found: {featurePath}");
-
-                var featureJson = File.ReadAllText(featurePath);
-                var featureData = JsonConvert.DeserializeObject<TestData>(featureJson);
-
-                var dict = new Dictionary<string, Dictionary<string, string>>();
-
-                foreach (var tc in featureData.TestCases)
+                if (fileExtension == ".json")
                 {
-                    var data = new Dictionary<string, string>();
-                    foreach (var kvp in tc.Data)
-                    {
-                        if (kvp.Value.StartsWith("#") && _commonData.TryGetValue(kvp.Value.TrimStart('#'), out var value))
-                            data[kvp.Key] = value;
-                        else
-                            data[kvp.Key] = kvp.Value;
-                    }
-                    dict[tc.TestCaseId] = data;
+                    LoadTestDataFromJson(featurePath);
+                }
+                else if (fileExtension == ".csv")
+                {
+                    LoadTestDataFromCsv(featurePath);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unsupported file format: {fileExtension}. Only .json and .csv are supported.");
+                }
+            }
+        }
+
+        private static void LoadCommonData(string commonPath)
+        {
+            if (!File.Exists(commonPath))
+                throw new FileNotFoundException($"Common data file not found: {commonPath}");
+
+            var commonJson = File.ReadAllText(commonPath);
+            _commonData = JsonConvert.DeserializeObject<Dictionary<string, string>>(commonJson);
+        }
+
+        private static void LoadTestDataFromJson(string featurePath)
+        {
+            if (!File.Exists(featurePath))
+                throw new FileNotFoundException($"Feature data file not found: {featurePath}");
+
+            var featureJson = File.ReadAllText(featurePath);
+            var featureData = JsonConvert.DeserializeObject<TestData>(featureJson);
+
+            var dict = new Dictionary<string, Dictionary<string, string>>();
+
+            foreach (var tc in featureData.TestCases)
+            {
+                var data = new Dictionary<string, string>();
+                foreach (var kvp in tc.Data)
+                {
+                    if (kvp.Value.StartsWith("#") && _commonData.TryGetValue(kvp.Value.TrimStart('#'), out var value))
+                        data[kvp.Key] = value;
+                    else
+                        data[kvp.Key] = kvp.Value;
+                }
+                dict[tc.TestCaseId] = data;
+            }
+
+            _cache[featurePath] = dict;
+        }
+
+        private static void LoadTestDataFromCsv(string featurePath)
+        {
+            if (!File.Exists(featurePath))
+                throw new FileNotFoundException($"Feature data file not found: {featurePath}");
+
+            using var reader = new StreamReader(featurePath);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var records = csv.GetRecords<dynamic>().ToList();
+
+            var dict = new Dictionary<string, Dictionary<string, string>>();
+
+            foreach (var record in records)
+            {
+                var data = new Dictionary<string, string>();
+                var testCaseId = record.TestCaseId.ToString();
+
+                foreach (var property in record)
+                {
+                    string key = property.Key;
+                    string value = property.Value.ToString();
+
+                    // Replace # with common data if applicable
+                    if (value.StartsWith("#") && _commonData.TryGetValue(value.TrimStart('#'), out var commonValue))
+                        data[key] = commonValue;
+                    else
+                        data[key] = value;
                 }
 
-                _cache[featurePath] = dict;
+                dict[testCaseId] = data;
             }
+
+            _cache[featurePath] = dict;
         }
 
         public static Dictionary<string, string> GetTestData(string testCaseId)
@@ -73,5 +135,17 @@ namespace ReqnrollProject2.Drivers
             throw new KeyNotFoundException($"TestCaseId '{testCaseId}' not found in loaded test data.");
         }
     }
-}
+    public static class Config
+    {
+        public static dynamic Settings { get; private set; }
 
+        public static void Load(string configFilePath)
+        {
+            if (!File.Exists(configFilePath))
+                throw new FileNotFoundException($"Global configuration file not found: {configFilePath}");
+
+            var configJson = File.ReadAllText(configFilePath);
+            Settings = JsonConvert.DeserializeObject<dynamic>(configJson);
+        }
+    }
+}
