@@ -15,13 +15,11 @@ namespace ReqnrollProject2.Drivers
         {
             if (driver.Value == null)
             {
-                // Use the passed browserName parameter instead of fetching from TestContext
                 string browser = browserName ?? Config.Settings.Browser.BrowserName;
                 var time = Config.Settings.Timeouts.ImplicitWait;
 
                 driver.Value = CreateDriver(browser);
                 driver.Value.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Convert.ToDouble(Config.Settings.Timeouts.ImplicitWait));
-                //driver.Value.Manage().Window.Maximize();
             }
             return driver.Value;
         }

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using ReqnrollProject2.Drivers;
+using ReqnrollProject2.Utility;
+using Activity = ReqnrollProject2.Utility.Activity;
 
 namespace ReqnrollProject2.Pages
 {
@@ -19,15 +21,18 @@ namespace ReqnrollProject2.Pages
         }
         public void NavigateToLoginPage()
         {
+            Activity.Log("User is Navigated to Google Url");
             driver.Navigate().GoToUrl("https://www.google.com/");
         }
         public void MaximizeTheWindow(string data)
         {
+            Activity.Log("User is Maximizing the Google Url");
             driver.FindElement(By.XPath("//textarea[@name='q']")).Click();
             driver.FindElement(By.XPath("//textarea[@name='q']")).SendKeys(data);
         }
         public void QuitTheDriver()
         {
+            Activity.Log("User is Quiting the Driver");
             driver.FindElement(By.XPath("//textarea[@name='q']")).Click();
         }
         public void UploadZipFile()

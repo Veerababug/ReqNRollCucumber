@@ -138,9 +138,19 @@ display: inline-block !important;
             _extent?.Flush();
         }
 
-        public static void LogMessage(string message)
+        public static void LogInfo(string message)
         {
-            _scenario.Value?.Info(message);
+            _step.Value?.Info(message); // Logs under the current Gherkin step node
+        }
+
+    }
+
+    public static class Activity
+    {
+        public static void Log(string message)
+        {   
+            ExtentReport.LogInfo(message);
         }
     }
+
 }
