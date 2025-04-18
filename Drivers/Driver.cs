@@ -21,7 +21,7 @@ namespace ReqnrollProject2.Drivers
 
                 driver.Value = CreateDriver(browser);
                 driver.Value.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Convert.ToDouble(Config.Settings.Timeouts.ImplicitWait));
-                driver.Value.Manage().Window.Maximize();
+                //driver.Value.Manage().Window.Maximize();
             }
             return driver.Value;
         }
