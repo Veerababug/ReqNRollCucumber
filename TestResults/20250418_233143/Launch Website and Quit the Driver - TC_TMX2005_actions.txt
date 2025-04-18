@@ -1,0 +1,4 @@
+--- Action Log for Scenario: Launch Website and Quit the Driver - TC_TMX2005 ---
+23:31:47 - User launching application
+23:31:50 - User Maximizing application
+23:31:50 - User Quiting application

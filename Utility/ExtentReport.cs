@@ -15,12 +15,16 @@ namespace ReqnrollProject2.Utility
         private static readonly object _lock = new();
         private static ExtentReports _extent;
         public static string ReportPath { get; private set; }
-
         private static readonly AsyncLocal<ExtentTest> _feature = new();
         private static readonly AsyncLocal<ExtentTest> _scenario = new();
         private static readonly AsyncLocal<ExtentTest> _step = new();
 
+        public static AsyncLocal<ExtentTest> StepInfo = new();
+        public static AsyncLocal<ExtentTest> ScenarioInfo => _scenario;
+        public static AsyncLocal<ExtentTest> FeatureInfo => _feature;
+
         private static readonly ConcurrentDictionary<string, ExtentTest> FeatureMap = new();
+
 
         public static void InitializeReport()
         {
@@ -84,21 +88,33 @@ display: inline-block !important;
             }
         }
 
-        public static void LogStep(string stepType, string stepText)
+        public static void LogStep(ScenarioBlock stepType, string stepText)
         {
-            _step.Value = stepType.ToLower() switch
+            var scenario = _scenario.Value;
+            ExtentTest stepNode = null;
+
+            switch (stepType)
             {
-                "given" => _scenario.Value.CreateNode<Given>(stepText),
-                "when" => _scenario.Value.CreateNode<When>(stepText),
-                "then" => _scenario.Value.CreateNode<Then>(stepText),
-                "and" => _scenario.Value.CreateNode<And>(stepText),
-                _ => _scenario.Value.CreateNode(stepText),
-            };
+                case ScenarioBlock.Given:
+                    stepNode = scenario.CreateNode<Given>(stepText);
+                    break;
+                case ScenarioBlock.When:
+                    stepNode = scenario.CreateNode<When>(stepText);
+                    break;
+                case ScenarioBlock.Then:
+                    stepNode = scenario.CreateNode<Then>(stepText);
+                    break;
+                default:
+                    stepNode = scenario.CreateNode<And>(stepText);
+                    break;
+            }
+
+            _step.Value = stepNode; // Store for later status update
         }
 
-        public static void StepPassed()
+        public static void StepPassed(string details = "")
         {
-            _step.Value?.Pass("Step passed");
+            _step.Value?.Pass(string.IsNullOrWhiteSpace(details) ? "Step passed" : details);
         }
 
         public static void StepFailed(string message, IWebDriver driver, string stepName)
@@ -110,7 +126,7 @@ display: inline-block !important;
         public static void StepSkipped(string reason)
         {
             _step.Value?.Skip(reason);
-            _scenario.Value?.Skip(reason);
+            //_scenario.Value?.Skip(reason);
         }
 
         public static void LogSkip(string featureTitle, string scenarioTitle, string message)
@@ -145,12 +161,38 @@ display: inline-block !important;
 
     }
 
-    public static class Activity
+    public static class Log
     {
-        public static void Log(string message)
-        {   
-            ExtentReport.LogInfo(message);
+        private static readonly AsyncLocal<string> _logFilePath = new AsyncLocal<string>();
+        private static readonly ConcurrentDictionary<string, object> _fileLocks = new();
+
+        public static void InitLog(string scenarioName, string reportFolderPath)
+        {
+            var sanitizedScenarioName = string.Join("_", scenarioName.Split(Path.GetInvalidFileNameChars()));
+            string filePath = Path.Combine(reportFolderPath, $"{sanitizedScenarioName}_actions.txt");
+            _logFilePath.Value = filePath;
+
+            if (!_fileLocks.ContainsKey(filePath))
+                _fileLocks.TryAdd(filePath, new object());
+
+            File.WriteAllText(filePath, $"--- Action Log for Scenario: {scenarioName} ---{Environment.NewLine}");
+        }
+
+        public static void Activity(string message)
+        {
+            if (string.IsNullOrEmpty(_logFilePath.Value))
+                return;
+
+            string logLine = $"{DateTime.Now:HH:mm:ss} - {message}";
+
+            // Write to text file
+            lock (_fileLocks[_logFilePath.Value])
+            {
+                File.AppendAllText(_logFilePath.Value, logLine + Environment.NewLine);
+            }
+
+            // Log inside the current step in ExtentReport
+            ExtentReport.StepInfo?.Value?.Info(message);
         }
     }
-
 }

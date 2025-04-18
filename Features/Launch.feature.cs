@@ -88,10 +88,12 @@ namespace ReqnrollProject2.Features
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Launch Website and Quit the Driver - TC_TMX2005")]
         [NUnit.Framework.CategoryAttribute("Sanity")]
+        [NUnit.Framework.CategoryAttribute("browser:Chrome")]
         public async System.Threading.Tasks.Task LaunchWebsiteAndQuitTheDriver_TC_TMX2005()
         {
             string[] tagsOfScenario = new string[] {
-                    "Sanity"};
+                    "Sanity",
+                    "browser:Chrome"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Launch Website and Quit the Driver - TC_TMX2005", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 6
@@ -120,10 +122,12 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Enter Valid Credentials - TC_TMX2006")]
         [NUnit.Framework.CategoryAttribute("Regression")]
+        [NUnit.Framework.CategoryAttribute("browser:edge")]
         public async System.Threading.Tasks.Task EnterValidCredentials_TC_TMX2006()
         {
             string[] tagsOfScenario = new string[] {
-                    "Regression"};
+                    "Regression",
+                    "browser:edge"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Enter Valid Credentials - TC_TMX2006", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 12
